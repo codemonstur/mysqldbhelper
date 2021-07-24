@@ -1,6 +1,7 @@
 package mysqldbhelper;
 
 import bobthebuildtool.pojos.buildfile.Project;
+import bobthebuildtool.pojos.error.VersionTooOld;
 import org.flywaydb.core.Flyway;
 
 import java.nio.file.Files;
@@ -8,10 +9,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
-public enum Main {;
+import static bobthebuildtool.services.Update.requireBobVersion;
 
-    public static void installPlugin(final Project project) {
-        project.addTarget("localdb", "Creates a localdb from the migration scripts", Main::createLocalDB);
+public enum BobPlugin {;
+
+    public static void installPlugin(final Project project) throws VersionTooOld {
+        requireBobVersion("5");
+        project.addTask("localdb", "Creates a localdb from the migration scripts", BobPlugin::createLocalDB);
     }
 
     private static void createLocalDB(final Project project, final Map<String, String> environment) throws SQLException {
@@ -22,8 +26,8 @@ public enum Main {;
         final String[] locations = project.getResourceDirectories()
             .stream()
             .map(path -> path.resolve("db/migration"))
-            .filter(path -> Files.isDirectory(path))
-            .map(path -> "filesystem:" + path.toAbsolutePath().toString())
+            .filter(Files::isDirectory)
+            .map(path -> "filesystem:" + path.toAbsolutePath())
             .toArray(String[]::new);
 
         Flyway.configure()
