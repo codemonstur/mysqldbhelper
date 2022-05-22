@@ -6,5 +6,5 @@ version: 1
 dependencies:
   - project: ../bobthebuildtool
     scope: provided
-  - repository: org.flywaydb:flyway-core:7.14.0
-  - repository: org.mariadb.jdbc:mariadb-java-client:3.0.1-beta
+  - repository: org.flywaydb:flyway-core:8.5.11
+  - repository: org.mariadb.jdbc:mariadb-java-client:3.0.4
